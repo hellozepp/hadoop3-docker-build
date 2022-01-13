@@ -30,18 +30,15 @@ RUN rm -rf /var/lib/apt/lists/*  \
     -o Acquire::http::Pipeline-Depth="0" install \
     -y --no-install-recommends --fix-missing locales \
     apt-utils build-essential software-properties-common  \
-    curl wget unzip nano git net-tools vim lrzsz && \
+    curl wget unzip nano git net-tools vim lrzsz  \
+    openssh-server rsync python2.7-dev libxml2-dev \
+    libkrb5-dev libffi-dev libldap2-dev python-lxml \
+    libxslt1-dev libgmp3-dev libsasl2-dev  \
+    libsqlite3-dev libmysqlclient-dev && \
    localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8 && \
    rm -rf /var/lib/apt/lists/* && \
    mkdir -p /work && \
-   apt-get install -y --reinstall build-essential && \
-   apt-get \
-            -o Acquire::http::Pipeline-Depth="0" install \
-            -y --no-install-recommends --fix-missing  \
-            openssh-server rsync python2.7-dev libxml2-dev \
-            libkrb5-dev libffi-dev libldap2-dev python-lxml \
-            libxslt1-dev libgmp3-dev libsasl2-dev  \
-            libsqlite3-dev libmysqlclient-dev
+   apt-get install -y --reinstall build-essential
 
 RUN \
     if [ ! -e /usr/bin/python ]; then ln -s /usr/bin/python2.7 /usr/bin/python; fi
@@ -50,13 +47,15 @@ RUN \
 #ADD hadoop-3.1.x.tar.gz /
 
 ## copy jars to Spark/home
-ADD lib/"hadoop-3.2.2.tar.gz" /opt/hadoop
+ADD lib/"hadoop-3.2.2.tar.gz" $HADOOP_HOME
 
-# ... uncomment the 2 first lines
-RUN \
+# ... uncomment the 2 first lines /bin/sh: 1: cannot create /opt/hadoop/etc/hadoop/hadoop-env.sh: Directory nonexistent
+#RUN \
 #    wget https://dist.apache.org/repos/dist/release/hadoop/common/hadoop-3.1.1//hadoop-3.1.1.tar.gz && \
 #  tar -xzf hadoop-3.1.1.tar.gz && \
 #    mv hadoop-3.1.1 $HADOOP_HOME && \
+RUN \
+    tree /opt/hadoop && \
     for user in hadoop hdfs yarn mapred hue; do \
          useradd -U -M -d /opt/hadoop/ --shell /bin/bash ${user}; \
     done && \
