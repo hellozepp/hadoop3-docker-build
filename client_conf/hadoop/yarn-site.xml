@@ -1,23 +1,23 @@
 <?xml version="1.0"?>
 <configuration>
-<property>
-   <name>yarn.nodemanager.vmem-check-enabled</name>
-    <value>false</value>
-    <description>Whether virtual memory limits will be enforced for containers</description>
-  </property>
- <property>
-   <name>yarn.nodemanager.vmem-pmem-ratio</name>
-    <value>2</value>
-    <description>Ratio between virtual memory to physical memory when setting memory limits for containers</description>
-  </property> 
+    <property>
+        <name>yarn.nodemanager.vmem-check-enabled</name>
+        <value>false</value>
+        <description>Whether virtual memory limits will be enforced for containers</description>
+    </property>
+    <property>
+        <name>yarn.nodemanager.vmem-pmem-ratio</name>
+        <value>2</value>
+        <description>Ratio between virtual memory to physical memory when setting memory limits for containers</description>
+    </property>
 
-   <property>
+    <property>
         <name>yarn.nodemanager.aux-services</name>
         <value>mapreduce_shuffle</value>
     </property>
     <property>
-       <name>yarn.resourcemanager.address</name>
-       <value>0.0.0.0:8032</value>
+        <name>yarn.resourcemanager.address</name>
+        <value>testcontiner_hadoop3:8032</value>
     </property>
     <property>
         <name>yarn.nodemanager.aux-services</name>
@@ -25,15 +25,15 @@
     </property>
     <property>
         <name>yarn.resourcemanager.scheduler.address</name>
-        <value>0.0.0.0:8030</value>
+        <value>testcontiner_hadoop3:8030</value>
     </property>
     <property>
         <name>yarn.resourcemanager.resource-tracker.address</name>
-        <value>0.0.0.0:8031</value>
+        <value>testcontiner_hadoop3:8031</value>
     </property>
     <property>
         <name>yarn.resourcemanager.admin.address</name>
-        <value>0.0.0.0:8033</value>
+        <value>testcontiner_hadoop3:8033</value>
     </property>
     <!-- Open the yarn.webapp.ui2 -->
     <property>
@@ -43,9 +43,9 @@
     </property>
     <property>
         <name>yarn.resourcemanager.webapp.address</name>
-        <value>0.0.0.0:8088</value>
+        <value>testcontiner_hadoop3:8088</value>
     </property>
-   <property>
+    <property>
         <name>yarn.nodemanager.resource.memory-mb</name>
         <value>2048</value>
     </property>
@@ -67,10 +67,10 @@
         <value>4092</value>
         <description>Maximum limit of memory to allocate to each container request at the Resource Manager.</description>
     </property>
-<property>
-<name>yarn.nodemanager.resource.memory-mb</name>
-<value>8192</value>
-</property> 
+    <property>
+        <name>yarn.nodemanager.resource.memory-mb</name>
+        <value>8192</value>
+    </property>
     <property>
         <name>yarn.scheduler.minimum-allocation-vcores</name>
         <value>1</value>
@@ -81,5 +81,5 @@
         <name>yarn.scheduler.maximum-allocation-vcores</name>
         <value>2</value>
         <description>The maximum allocation for every container request at the RM, in terms of virtual CPU cores. Requests higher than this won't take effect, and will get capped to this value.</description>
-     </property>
+    </property>
 </configuration>

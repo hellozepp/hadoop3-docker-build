@@ -19,6 +19,7 @@
 FROM ubuntu:focal-20210827
 
 ENV JAVA_HOME /work/jdk1.8.0_151
+ENV BASE_DIR /opt
 ENV HADOOP_HOME /opt/hadoop
 ENV LANG=C.UTF-8 LC_ALL=C.UTF-8 DEBIAN_FRONTEND=noninteractive
 
@@ -33,7 +34,7 @@ RUN rm -rf /var/lib/apt/lists/*  \
     curl wget unzip nano git net-tools vim lrzsz  \
     openssh-server rsync python2.7-dev libxml2-dev \
     libkrb5-dev libffi-dev libldap2-dev python-lxml \
-    libxslt1-dev libgmp3-dev libsasl2-dev  \
+    libxslt1-dev libgmp3-dev libsasl2-dev tree  \
     libsqlite3-dev libmysqlclient-dev && \
    localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8 && \
    rm -rf /var/lib/apt/lists/* && \
@@ -46,18 +47,25 @@ RUN \
 # If you have already downloaded the tgz, add this line OR comment it AND ...
 #ADD hadoop-3.1.x.tar.gz /
 
-## copy jars to Spark/home
-ADD lib/"hadoop-3.2.2.tar.gz" $HADOOP_HOME
+ENV SCALA_HOME /work/scala-2.12.10
+ENV SPARK_HOME /opt/spark
 
+## copy jars to Spark/home
+ADD lib/"hadoop-3.2.2.tar.gz" $BASE_DIR
+ADD lib/"jdk-8u151-linux-x64.tar.gz" $BASE_DIR
+ADD lib/"scala-2.12.10.tgz" $BASE_DIR
+ADD lib/"spark-3.1.1-bin-hadoop3.2.tgz" $BASE_DIR
+RUN ls $BASE_DIR && mv $BASE_DIR/hadoop-3.2.2 $HADOOP_HOME && mv $BASE_DIR/jdk1.8.0_151 $JAVA_HOME && \
+    mv $BASE_DIR/scala-2.12.10 $SCALA_HOME && mv $BASE_DIR/spark-3.1.1-bin-hadoop3.2 $SPARK_HOME && \
+    mkdir -p "/home/hadoop/namedir" "/home/hadoop/datadir" "/home/hadoop/tmp"
 # ... uncomment the 2 first lines /bin/sh: 1: cannot create /opt/hadoop/etc/hadoop/hadoop-env.sh: Directory nonexistent
 #RUN \
 #    wget https://dist.apache.org/repos/dist/release/hadoop/common/hadoop-3.1.1//hadoop-3.1.1.tar.gz && \
 #  tar -xzf hadoop-3.1.1.tar.gz && \
 #    mv hadoop-3.1.1 $HADOOP_HOME && \
 RUN \
-    tree /opt/hadoop && \
     for user in hadoop hdfs yarn mapred hue; do \
-         useradd -U -M -d /opt/hadoop/ --shell /bin/bash ${user}; \
+         useradd -U -M -d $HADOOP_HOME/ --shell /bin/bash ${user}; \
     done && \
     for user in root hdfs yarn mapred hue; do \
          usermod -G hadoop ${user}; \
@@ -69,7 +77,14 @@ RUN \
     echo "export HDFS_SECONDARYNAMENODE_USER=root" >> $HADOOP_HOME/etc/hadoop/hadoop-env.sh && \
     echo "export YARN_RESOURCEMANAGER_USER=root" >> $HADOOP_HOME/etc/hadoop/yarn-env.sh && \
     echo "export YARN_NODEMANAGER_USER=root" >> $HADOOP_HOME/etc/hadoop/yarn-env.sh && \
-    echo "PATH=$PATH:$HADOOP_HOME/bin" >> ~/.bashrc
+    echo "export PATH="'$PATH'":$HADOOP_HOME/bin:$HADOOP_HOME/sbin" >> ~/.bashrc && \
+    echo "export HADOOP_HOME=$HADOOP_HOME" >> ~/.bashrc && \
+    echo "export SPARK_HOME=$SPARK_HOME" >> ~/.bashrc
+
+ADD core-site.xml $HADOOP_HOME/etc/hadoop/
+ADD hdfs-site.xml $HADOOP_HOME/etc/hadoop/
+ADD mapred-site.xml $HADOOP_HOME/etc/hadoop/
+ADD yarn-site.xml $HADOOP_HOME/etc/hadoop/
 
 ####################################################################################
 # HUE
@@ -90,19 +105,26 @@ RUN \
 ####################################################################################
 
 RUN \
-    service sshd start  && \
+    service ssh restart && \
     ssh-keygen -t rsa -P '' -f ~/.ssh/id_rsa && \
     cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys && \
     chmod 0600 ~/.ssh/authorized_keys
-
-ADD *xml $HADOOP_HOME/etc/hadoop/
 
 ADD ssh_config /root/.ssh/config
 
 ADD hue.ini /opt/hue/desktop/conf
 
 ADD start-all.sh start-all.sh
-
-EXPOSE 8088 9870 9864 19888 8042 8888
+ADD spark-env.sh $SPARK_HOME/conf/spark-env.sh
+# resourceManager 8032，resourceManager ui 8088,resourcemanager.scheduler 8030
+# resource-tracker 8031
+# resourcemanager.admin 8033
+# defaultFS 8020
+# secondary.http-address 9001
+#filesystem uri 8020
+# containerlogs 8042
+EXPOSE 8088 9870 9864 8042 8888 8032 8030 8031 8020 10020 19888 9000 9001 8042
+# xdebug->10002
+EXPOSE 10002
 
 CMD bash start-all.sh
