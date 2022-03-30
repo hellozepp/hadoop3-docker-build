@@ -24,6 +24,10 @@
         <value>mapreduce_shuffle</value>
     </property>
     <property>
+        <name>yarn.resourcemanager.bind-host</name>
+        <value>0.0.0.0</value>
+    </property>
+    <property>
         <name>yarn.resourcemanager.scheduler.address</name>
         <value>0.0.0.0:8030</value>
     </property>

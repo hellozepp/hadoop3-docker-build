@@ -13,15 +13,17 @@ echo "Check the dfs status:"
 $HADOOP_HOME/bin/hdfs dfsadmin -report
 
 $HADOOP_HOME/sbin/start-yarn.sh
-$HADOOP_HOME/sbin/mr-jobhistory-daemon.sh start historyserver
 
+$HADOOP_HOME/bin/yarn node -list
+
+$HADOOP_HOME/sbin/mr-jobhistory-daemon.sh start historyserver
+sleep 10
 echo "============================"
 echo "All servers started successfully!"
 echo "============================"
 
 # START HUE
 ###########
-sleep 20
 #/opt/hue/build/env/bin/supervisor &
 
 tail -f /dev/null
