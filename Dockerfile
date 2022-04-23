@@ -44,19 +44,10 @@ RUN rm -rf /var/lib/apt/lists/*  \
 RUN \
     if [ ! -e /usr/bin/python ]; then ln -s /usr/bin/python2.7 /usr/bin/python; fi
 
-# If you have already downloaded the tgz, add this line OR comment it AND ...
-#ADD hadoop-3.1.x.tar.gz /
-
-ENV SCALA_HOME /work/scala-2.12.10
-ENV SPARK_HOME /opt/spark
-
 ## copy jars to Spark/home
-ADD lib/"hadoop-3.2.2.tar.gz" $BASE_DIR
+ADD lib/"hadoop-3.2.3.tar.gz" $BASE_DIR
 ADD lib/"jdk-8u151-linux-x64.tar.gz" $BASE_DIR
-ADD lib/"scala-2.12.10.tgz" $BASE_DIR
-ADD lib/"spark-3.1.1-bin-hadoop3.2.tgz" $BASE_DIR
-RUN ls $BASE_DIR && mv $BASE_DIR/hadoop-3.2.2 $HADOOP_HOME && mv $BASE_DIR/jdk1.8.0_151 $JAVA_HOME && \
-    mv $BASE_DIR/scala-2.12.10 $SCALA_HOME && mv $BASE_DIR/spark-3.1.1-bin-hadoop3.2 $SPARK_HOME && \
+RUN ls $BASE_DIR && mv $BASE_DIR/hadoop-3.2.3 $HADOOP_HOME && mv $BASE_DIR/jdk1.8.0_151 $JAVA_HOME && \
     mkdir -p "/home/hadoop/namedir" "/home/hadoop/datadir" "/home/hadoop/tmp"
 # ... uncomment the 2 first lines /bin/sh: 1: cannot create /opt/hadoop/etc/hadoop/hadoop-env.sh: Directory nonexistent
 #RUN \
@@ -78,8 +69,7 @@ RUN \
     echo "export YARN_RESOURCEMANAGER_USER=root" >> $HADOOP_HOME/etc/hadoop/yarn-env.sh && \
     echo "export YARN_NODEMANAGER_USER=root" >> $HADOOP_HOME/etc/hadoop/yarn-env.sh && \
     echo "export PATH="'$PATH'":$HADOOP_HOME/bin:$HADOOP_HOME/sbin" >> ~/.bashrc && \
-    echo "export HADOOP_HOME=$HADOOP_HOME" >> ~/.bashrc && \
-    echo "export SPARK_HOME=$SPARK_HOME" >> ~/.bashrc
+    echo "export HADOOP_HOME=$HADOOP_HOME" >> ~/.bashrc
 
 ADD core-site.xml $HADOOP_HOME/etc/hadoop/
 ADD hdfs-site.xml $HADOOP_HOME/etc/hadoop/
@@ -115,7 +105,6 @@ ADD ssh_config /root/.ssh/config
 ADD hue.ini /opt/hue/desktop/conf
 
 ADD start-all.sh start-all.sh
-ADD spark-env.sh $SPARK_HOME/conf/spark-env.sh
 # resourceManager 8032，resourceManager ui 8088,resourcemanager.scheduler 8030
 # resource-tracker 8031
 # resourcemanager.admin 8033
