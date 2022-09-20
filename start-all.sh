@@ -22,6 +22,8 @@ echo "============================"
 echo "All servers started successfully!"
 echo "============================"
 
+$HADOOP_HOME/bin/hadoop fs -put /home/hadoop/data/* /
+
 # START HUE
 ###########
 #/opt/hue/build/env/bin/supervisor &

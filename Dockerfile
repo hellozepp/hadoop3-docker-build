@@ -48,7 +48,7 @@ RUN \
 ADD lib/"hadoop-3.2.3.tar.gz" $BASE_DIR
 ADD lib/"jdk-8u151-linux-x64.tar.gz" $BASE_DIR
 RUN ls $BASE_DIR && mv $BASE_DIR/hadoop-3.2.3 $HADOOP_HOME && mv $BASE_DIR/jdk1.8.0_151 $JAVA_HOME && \
-    mkdir -p "/home/hadoop/namedir" "/home/hadoop/datadir" "/home/hadoop/tmp"
+    mkdir -p "/home/hadoop/namedir" "/home/hadoop/datadir" "/home/hadoop/tmp"  "/home/hadoop/data/tmp"
 # ... uncomment the 2 first lines /bin/sh: 1: cannot create /opt/hadoop/etc/hadoop/hadoop-env.sh: Directory nonexistent
 #RUN \
 #    wget https://dist.apache.org/repos/dist/release/hadoop/common/hadoop-3.1.1//hadoop-3.1.1.tar.gz && \
