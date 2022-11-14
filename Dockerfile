@@ -108,9 +108,9 @@ ADD start-all.sh start-all.sh
 # resourceManager 8032，resourceManager ui 8088,resourcemanager.scheduler 8030
 # resource-tracker 8031
 # resourcemanager.admin 8033
-# defaultFS 8020
+# 获取namenode元数据信息的RPC默认端口 8020 hdfs://hadoop3:8020
+# hdfs ui 9870
 # secondary.http-address 9001
-#filesystem uri 8020
 # containerlogs 8042
 EXPOSE 8088 9870 9864 8042 8888 8032 8030 8031 8020 10020 19888 9000 9001 8042
 # xdebug->10002
